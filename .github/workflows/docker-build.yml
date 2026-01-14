@@ -1,0 +1,71 @@
+name: Build, test and push Docker image
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - '*'  # Trigger on any tag push
+  pull_request:
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: openpaygo-docker
+      REGISTRY: ghcr.io
+      # repository_owner must be lowercase for container registries
+      REGISTRY_IMAGE: ghcr.io/masungatech/openpaygo-docker
+
+    permissions:
+      contents: read
+      packages: write   # needed to push to GitHub Container Registry
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE_NAME:${{ github.sha }} .
+      
+      - name: Set tag name
+        id: tag
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run tests inside container
+        run: |
+          docker run --rm $IMAGE_NAME:${{ github.sha }} pytest tests/ -v
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref_type == 'tag')
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u "${{ github.actor }}" --password-stdin
+
+      - name: Tag image for registry
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref_type == 'tag')
+        run: |
+          docker tag $IMAGE_NAME:${{ github.sha }} $REGISTRY_IMAGE:${{ github.sha }}
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            docker tag $IMAGE_NAME:${{ github.sha }} $REGISTRY_IMAGE:${{ steps.tag.outputs.tag }}
+          else
+            docker tag $IMAGE_NAME:${{ github.sha }} $REGISTRY_IMAGE:latest
+          fi
+
+      - name: Push image to registry
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref_type == 'tag')
+        run: |
+          docker push $REGISTRY_IMAGE:${{ github.sha }}
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            docker push $REGISTRY_IMAGE:${{ steps.tag.outputs.tag }}
+          else
+            docker push $REGISTRY_IMAGE:latest
+          fi
+
