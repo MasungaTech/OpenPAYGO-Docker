@@ -1,0 +1,11 @@
+Flask==3.0.3
+gunicorn==21.2.0
+pony==0.7.19
+psycopg2-binary==2.9.10
+openpaygo==0.5.5
+python-dateutil==2.9.0.post0
+pydantic==2.9.2
+pytest==8.3.3
+freezegun==1.5.1
+
+

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Devices CSV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 { color: #333; }
+        form {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+        }
+        .error {
+            background: #ffe7e7;
+            padding: 15px;
+            border-left: 4px solid #dc3545;
+            margin: 20px 0;
+        }
+        .success {
+            background: #e7f5e7;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Devices CSV</h1>
+    <div class="info">
+        <strong>CSV Format:</strong> The CSV file should have the following columns (case-insensitive):
+        <ul>
+            <li>Serial Number</li>
+            <li>Starting Code</li>
+            <li>Key</li>
+            <li>Count</li>
+            <li>Time Divider</li>
+            <li>Restricted Digit Mode</li>
+            <li>Hardware Model</li>
+            <li>Version (optional, ignored)</li>
+            <li>Test Code (optional, ignored)</li>
+        </ul>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="csv_file">Select CSV file:</label><br>
+        <input type="file" id="csv_file" name="csv_file" accept=".csv" required><br>
+        <button type="submit">Upload and Import Devices</button>
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 { color: #333; }
+        .success {
+            background: #e7f5e7;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            margin: 20px 0;
+        }
+        .error {
+            background: #ffe7e7;
+            padding: 15px;
+            border-left: 4px solid #dc3545;
+            margin: 20px 0;
+        }
+        .skipped {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            padding: 5px 0;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV Upload Results</h1>
+    
+    {% if success_messages %}
+    <div class="success">
+        <strong>Successfully imported ({{ success_messages|length }} devices):</strong>
+        <ul>
+            {% for msg in success_messages %}
+            <li>{{ msg }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    {% if skipped_messages %}
+    <div class="skipped">
+        <strong>Skipped ({{ skipped_messages|length }} devices):</strong>
+        <ul>
+            {% for msg in skipped_messages %}
+            <li>{{ msg }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    {% if error_messages %}
+    <div class="error">
+        <strong>Errors ({{ error_messages|length }}):</strong>
+        <ul>
+            {% for msg in error_messages %}
+            <li>{{ msg }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    <p>
+        <a href="/upload-devices">Upload another file</a> | 
+        <a href="/devices">View all devices</a>
+    </p>
+</body>
+</html>
+
